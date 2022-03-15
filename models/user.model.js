@@ -12,4 +12,5 @@ module.exports = (sequelize, DataTypes) =>
     },
     password: DataTypes.STRING,
     profile_picture: DataTypes.STRING,
+    reset_token: DataTypes.STRING,
   })
