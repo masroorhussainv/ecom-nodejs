@@ -4,6 +4,7 @@ const port = 3000
 const cors = require("cors")
 const user = require("./routes/user.route")
 const product = require("./routes/product.route")
+const image = require("./routes/image.route")
 require("dotenv").config()
 
 const corsOptions = {
@@ -23,5 +24,6 @@ db.sequelize.sync({ force: false }).then(() => {
 app.use("/static", express.static("public"))
 app.use("/user", user)
 app.use("/product", product)
+app.use("/image", image)
 
 app.listen("4000", () => console.log(`listening on port ${port} `))

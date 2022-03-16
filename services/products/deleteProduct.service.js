@@ -1,5 +1,5 @@
 const { Product, Image } = require("../../models")
-const fs = require("fs/promises")
+const fs = require("fs")
 
 module.exports = async (userID, productId) => {
   try {
@@ -12,7 +12,7 @@ module.exports = async (userID, productId) => {
     })
     if (product < 1) return { err: "wrong product id" }
     images.map((image) =>
-      fs.unlink("./public/images/" + image.url.split("images/")[1])
+      fs.unlinkSync("./public/images/" + image.url.split("images/")[1])
     )
 
     return
