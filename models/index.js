@@ -56,9 +56,13 @@ db.Cart.belongsTo(db.User, { foreignKey: "uid" })
 // Product relations
 db.Product.hasMany(db.Image, {
   foreignKey: "product_id",
+  onDelete: "cascade",
+  hooks: true,
 })
 db.Product.hasMany(db.Comment, {
   foreignKey: "product_id",
+  onDelete: "cascade",
+  hooks: true,
 })
 db.Image.belongsTo(db.Product, { foreignKey: "product_id" })
 db.Comment.belongsTo(db.Product, { foreignKey: "product_id" })

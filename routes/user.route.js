@@ -1,4 +1,3 @@
-const { route } = require("express/lib/application")
 const user = require("../controllers/user.controller")
 const router = require("express").Router()
 

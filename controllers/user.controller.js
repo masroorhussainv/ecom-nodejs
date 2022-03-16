@@ -4,8 +4,9 @@ const comparePassword = require("../utils/comparePassword.util")
 const jwt = require("jsonwebtoken")
 const crypto = require("crypto")
 const sendEmail = require("../utils/sendEmail.util")
+const userSchema = require("../validators/user.validate")
 
-const resetPasswordTemplate = (name, link) => `<html>
+const resetPasswordEmailTemplate = (name, link) => `<html>
     <head>
         <style>
         </style>
@@ -18,18 +19,21 @@ const resetPasswordTemplate = (name, link) => `<html>
     </body>
 </html>`
 
+const options = {
+  errors: {
+    wrap: {
+      label: "",
+    },
+  },
+}
+
 module.exports = {
   signUp: async (req, res) => {
     let { username, email, password, profilePicture } = req.body
 
     // Validate user input
-    if (!(email && password && username)) {
-      return res.status(400).send({
-        error: `${
-          username ? (email ? "password" : "email") : "username"
-        } is required`,
-      })
-    }
+    const { error } = userSchema.validate(req.body, options)
+    if (error) return res.status(400).send({ error: error.details[0].message })
 
     email = email.toLowerCase()
     // Check user existence
@@ -61,8 +65,8 @@ module.exports = {
           process.env.JWT_SECRET_KEY,
           { expiresIn: "7d" }
         )
-
-        delete user.dataValues.password
+        user = user.toJSON()
+        delete user.password
         return res.status(201).send({ token, user })
       })
       .catch((err) =>
@@ -82,7 +86,7 @@ module.exports = {
 
     email = email.toLowerCase()
     // Check user existence
-    const user = await User.findOne({ where: { email } })
+    var user = await User.findOne({ where: { email } })
     if (user === null) {
       return res.status(404).send({ error: `User not found with this email` })
     }
@@ -100,7 +104,8 @@ module.exports = {
       { expiresIn: "7d" }
     )
 
-    delete user.dataValues.password
+    user = user.toJSON()
+    delete user.password
     return res.status(200).send({ token, user })
   },
 
@@ -134,7 +139,7 @@ module.exports = {
     const linkSent = await sendEmail(
       user.email,
       "Reset password link",
-      resetPasswordTemplate(user.username, link)
+      resetPasswordEmailTemplate(user.username, link)
     )
     if (!linkSent) {
       return res.status(503).send({ error: `Email service is not working` })
