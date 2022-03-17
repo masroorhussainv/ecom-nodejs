@@ -3,6 +3,7 @@ module.exports = (sequelize, DataTypes) =>
     id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
     name: DataTypes.STRING,
     description: DataTypes.STRING,
+    price: DataTypes.FLOAT,
     sku: {
       type: DataTypes.STRING,
       unique: true,

@@ -1,11 +1,12 @@
 const { Product, Image } = require("../../models")
 const crypto = require("crypto")
 
-module.exports = async (userID, name, description, images) => {
+module.exports = async (userID, name, description, price, images) => {
   try {
     var product = await Product.create({
       name,
       description,
+      price,
       sku: crypto.randomBytes(10).toString("hex"),
       uid: userID,
     })

@@ -1,14 +1,22 @@
 const { Product, Image } = require("../../models")
 
-module.exports = async (userID, productId, name, description, images) => {
+module.exports = async (
+  userID,
+  productId,
+  name,
+  description,
+  price,
+  images
+) => {
   try {
-    var product = await Product.update(
-      {
-        name,
-        description,
-      },
-      { where: { uid: userID, id: productId } }
-    )
+    const data = {
+      name,
+      ...(description ? { description } : null),
+      ...(price ? { price } : null),
+    }
+    var product = await Product.update(data, {
+      where: { uid: userID, id: productId },
+    })
 
     if (product[0] < 1) {
       return { err: "wrong product id" }

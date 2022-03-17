@@ -68,20 +68,18 @@ db.Image.belongsTo(db.Product, { foreignKey: "product_id" })
 db.Comment.belongsTo(db.Product, { foreignKey: "product_id" })
 
 // Cart relations
-db.Cart.hasOne(db.CouponCode, {
-  foreignKey: "cart_id",
+db.CouponCode.hasOne(db.Cart, {
+  foreignKey: "coupon_id",
 })
-db.CouponCode.belongsTo(db.Cart, { foreignKey: "cart_id" })
+db.Cart.belongsTo(db.CouponCode, { foreignKey: "coupon_id" })
 
 // Product cart many-to-many relation
 db.Product.belongsToMany(db.Cart, {
   through: db.CartItem,
-  as: "product_belongs_to_cart",
   foreignKey: "product_id",
 })
 db.Cart.belongsToMany(db.Product, {
   through: db.CartItem,
-  as: "cart_product",
   foreignKey: "cart_id",
 })
 

@@ -15,7 +15,7 @@ const options = {
 
 module.exports = {
   create: async (req, res) => {
-    const { name, description } = req.body
+    const { name, description, price } = req.body
     // Validate product input
     const { error } = productSchema.validate(req.body, options)
     if (error) return res.status(400).send({ error: error.details[0].message })
@@ -25,6 +25,7 @@ module.exports = {
       req.userID,
       name,
       description,
+      price,
       req.fileNames
     )
     if (result.err) {
@@ -37,7 +38,7 @@ module.exports = {
 
   findAll: async (req, res) => {
     // find all products
-    const result = await findProducts({ uid: req.userID })
+    const result = await findProducts()
     if (result.err) {
       return res
         .status(404)
@@ -48,7 +49,7 @@ module.exports = {
 
   findById: async (req, res) => {
     // find a product
-    const result = await findProduct({ uid: req.userID, id: req.params.id })
+    const result = await findProduct({ id: req.params.id })
     if (result.err) {
       return res
         .status(404)
@@ -58,7 +59,7 @@ module.exports = {
   },
 
   update: async (req, res) => {
-    const { name, description, productId } = req.body
+    const { name, description, price, productId } = req.body
     // Validate product input
     if (!(name && productId))
       return res
@@ -71,6 +72,7 @@ module.exports = {
       productId,
       name,
       description,
+      price,
       req.fileNames
     )
     if (result?.err) {

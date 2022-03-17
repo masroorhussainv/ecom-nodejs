@@ -17,4 +17,10 @@ module.exports = (sequelize, DataTypes) =>
         key: "id",
       },
     },
+    quantity: {
+      type: DataTypes.INTEGER,
+    },
+    price: {
+      type: DataTypes.FLOAT,
+    },
   })

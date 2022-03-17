@@ -2,10 +2,11 @@ const express = require("express")
 const app = express()
 const port = 3000
 const cors = require("cors")
-const user = require("./routes/user.route")
-const product = require("./routes/product.route")
-const image = require("./routes/image.route")
-const comment = require("./routes/comment.route")
+const user = require("./routes/user.routes")
+const product = require("./routes/product.routes")
+const image = require("./routes/image.routes")
+const comment = require("./routes/comment.routes")
+const cart = require("./routes/cart.routes")
 require("dotenv").config()
 
 const corsOptions = {
@@ -27,5 +28,6 @@ app.use("/user", user)
 app.use("/product", product)
 app.use("/image", image)
 app.use("/comment", comment)
+app.use("/cart", cart)
 
 app.listen("4000", () => console.log(`listening on port ${port} `))
