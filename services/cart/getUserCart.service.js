@@ -9,6 +9,7 @@ module.exports = (userID) =>
     },
   })
     .then((cart) => {
+      if (!cart) throw " "
       return { cart }
     })
     .catch((err) => {

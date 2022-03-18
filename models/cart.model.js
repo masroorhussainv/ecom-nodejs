@@ -3,4 +3,5 @@ module.exports = (sequelize, DataTypes) =>
     id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
     total: { type: DataTypes.DOUBLE },
     total_before_discount: { type: DataTypes.DOUBLE },
+    coupon_code: DataTypes.STRING,
   })
