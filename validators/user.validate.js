@@ -11,4 +11,5 @@ module.exports = Joi.object({
     .required(),
   profilePicture: Joi.string(),
   reset_token: Joi.string(),
+  guestToken: Joi.string(),
 })

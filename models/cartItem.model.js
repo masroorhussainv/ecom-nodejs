@@ -17,6 +17,9 @@ module.exports = (sequelize, DataTypes) =>
         key: "id",
       },
     },
+    product_owner_id: {
+      type: DataTypes.INTEGER,
+    },
     quantity: {
       type: DataTypes.INTEGER,
     },

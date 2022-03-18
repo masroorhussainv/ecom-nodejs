@@ -5,6 +5,7 @@ const jwt = require("jsonwebtoken")
 const crypto = require("crypto")
 const sendEmail = require("../utils/sendEmail.util")
 const userSchema = require("../validators/user.validate")
+const deleteGuestUserCart = require("../services/cart/deleteGuestUserCart.service")
 
 const resetPasswordEmailTemplate = (name, link) => `<html>
     <head>
@@ -29,7 +30,7 @@ const options = {
 
 module.exports = {
   signUp: async (req, res) => {
-    let { username, email, password, profilePicture } = req.body
+    let { username, email, password, profilePicture, guestToken } = req.body
 
     // Validate user input
     const { error } = userSchema.validate(req.body, options)
@@ -52,30 +53,51 @@ module.exports = {
     password = encryptedPassword.hash
 
     // Create user
-    User.create({
-      username,
-      email,
-      password,
-      profile_picture: profilePicture,
-    })
-      .then((user) => {
-        // Create token
-        const token = jwt.sign(
-          { userID: user.id, email: user.email, username: user.username },
-          process.env.JWT_SECRET_KEY,
-          { expiresIn: "7d" }
+    if (guestToken)
+      guestToken = jwt.verify(guestToken, process.env.JWT_SECRET_KEY)
+    try {
+      var user = {}
+      if (guestToken?.guestUser) {
+        await User.update(
+          {
+            username,
+            email,
+            password,
+            profile_picture: profilePicture,
+            guest_token: null,
+          },
+          { where: { id: guestToken.userID } }
         )
-        user = user.toJSON()
-        delete user.password
-        return res.status(201).send({ token, user })
-      })
-      .catch((err) =>
-        res.status(422).send({ error: "failed to create user", message: err })
+        user = await User.findOne({ where: { id: guestToken.userID } })
+      } else {
+        user = await User.create({
+          username,
+          email,
+          password,
+          profile_picture: profilePicture,
+        })
+      }
+      // Create token
+      const token = jwt.sign(
+        {
+          userID: user.id,
+          email: user.email,
+          username: user.username,
+          guestUser: false,
+        },
+        process.env.JWT_SECRET_KEY,
+        { expiresIn: "7d" }
       )
+      user = user.toJSON()
+      delete user.password
+      return res.status(201).send({ token, user })
+    } catch (err) {
+      res.status(422).send({ error: "failed to create user", message: err })
+    }
   },
 
   login: async (req, res) => {
-    let { email, password } = req.body
+    let { email, password, guestToken } = req.body
 
     // Validate user input
     if (!(email && password)) {
@@ -97,9 +119,18 @@ module.exports = {
       return res.status(403).send({ error: `Incorrect password` })
     }
 
+    if (guestToken)
+      guestToken = jwt.verify(guestToken, process.env.JWT_SECRET_KEY)
+    if (guestToken?.guestUser)
+      await deleteGuestUserCart(user.id, guestToken.userID)
     // Create token
     const token = jwt.sign(
-      { userID: user.id, email: user.email, username: user.username },
+      {
+        userID: user.id,
+        email: user.email,
+        username: user.username,
+        guestUser: false,
+      },
       process.env.JWT_SECRET_KEY,
       { expiresIn: "7d" }
     )

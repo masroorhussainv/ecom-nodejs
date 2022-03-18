@@ -13,5 +13,5 @@ module.exports = (sequelize, DataTypes) =>
     password: DataTypes.STRING,
     profile_picture: DataTypes.STRING,
     reset_token: DataTypes.STRING,
-    guest_user: { type: DataTypes.BOOLEAN, defaultValue: false },
+    guest_token: DataTypes.STRING,
   })

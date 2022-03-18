@@ -38,15 +38,23 @@ db.CartItem = require("./cartItem.model.js")(sequelize, Sequelize)
 // User relations
 db.User.hasMany(db.Product, {
   foreignKey: "uid",
+  onDelete: "cascade",
+  hooks: true,
 })
 db.User.hasMany(db.Comment, {
   foreignKey: "uid",
+  onDelete: "cascade",
+  hooks: true,
 })
 db.User.hasMany(db.Order, {
   foreignKey: "uid",
+  onDelete: "cascade",
+  hooks: true,
 })
 db.User.hasOne(db.Cart, {
   foreignKey: "uid",
+  onDelete: "cascade",
+  hooks: true,
 })
 db.Product.belongsTo(db.User, { foreignKey: "uid" })
 db.Comment.belongsTo(db.User, { foreignKey: "uid" })

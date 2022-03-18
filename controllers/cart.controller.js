@@ -27,7 +27,9 @@ module.exports = {
         .status(422)
         .send({ error: "unable to add to cart", message: result.err })
     }
-    return res.status(200).send(result.cart)
+    return res
+      .status(200)
+      .send({ ...result.cart.toJSON(), guestToken: req.guestToken })
   },
 
   updateCart: async (req, res) => {
@@ -110,6 +112,14 @@ module.exports = {
     if (result?.error) {
       return res.status(422).send(result)
     }
-    return res.status(200).send(result)
+    return res.status(200).send(result.cart)
+  },
+
+  getCart: async (req, res) => {
+    const result = await getUserCart(req.userID)
+    if (result?.err || !result.cart) {
+      return res.status(404).send({ error: "no cart found" })
+    }
+    return res.status(200).send(result.cart)
   },
 }

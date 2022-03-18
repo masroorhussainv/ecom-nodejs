@@ -23,6 +23,7 @@ module.exports = async (product, cart, userID) => {
           cart_id: cart.id,
           quantity: 1,
           price: product.price,
+          product_owner_id: product.uid,
         })
       }
       await Cart.update(
@@ -50,6 +51,7 @@ module.exports = async (product, cart, userID) => {
       cart_id: cart.id,
       quantity: 1,
       price: product.price,
+      product_owner_id: product.uid,
     })
 
     const response = await getUserCart(userID)
