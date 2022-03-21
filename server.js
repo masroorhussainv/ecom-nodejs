@@ -8,6 +8,7 @@ const image = require("./routes/image.routes")
 const comment = require("./routes/comment.routes")
 const cart = require("./routes/cart.routes")
 const order = require("./routes/order.routes")
+const coupon = require("./routes/couponCode.routes")
 require("dotenv").config()
 
 const corsOptions = {
@@ -31,5 +32,6 @@ app.use("/image", image)
 app.use("/comment", comment)
 app.use("/cart", cart)
 app.use("/order", order)
+app.use("/coupon", coupon)
 
 app.listen("4000", () => console.log(`listening on port ${port} `))

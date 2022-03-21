@@ -1,4 +1,5 @@
 const { Cart, CartItem } = require("../../models")
+const calculateCartTotal = require("../../utils/calculateCartTotal.util")
 const getUserCart = require("./getUserCart.service")
 
 module.exports = async (product, cart, userID) => {
@@ -26,9 +27,13 @@ module.exports = async (product, cart, userID) => {
           product_owner_id: product.uid,
         })
       }
+      const total = await calculateCartTotal(
+        cart,
+        cart.total_before_discount + product.price
+      )
       await Cart.update(
         {
-          total: cart.total + product.price,
+          total,
           total_before_discount: cart.total_before_discount + product.price,
         },
         { where: { uid: userID } }

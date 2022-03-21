@@ -4,6 +4,7 @@ const findProduct = require("../services/products/findProduct.service")
 const createProduct = require("../services/products/createProduct.service")
 const updateProduct = require("../services/products/updateProduct.service")
 const deleteProduct = require("../services/products/deleteProduct.service")
+const searchProducts = require("../services/products/searchProducts.service")
 
 const options = {
   errors: {
@@ -89,5 +90,13 @@ module.exports = {
       return res.status(404).send({ error: "not found", message: result.err })
     }
     return res.status(200).send({ success: "Deleted successfully" })
+  },
+
+  search: async (req, res) => {
+    const result = await searchProducts(req.query.q)
+    if (result?.err) {
+      return res.status(404).send({ error: "not found", message: result.err })
+    }
+    return res.status(200).send(result.products)
   },
 }

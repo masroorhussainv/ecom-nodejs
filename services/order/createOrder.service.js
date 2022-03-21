@@ -8,9 +8,9 @@ module.exports = async (transactionId, cart, cartItems) => {
       status: "pending",
       coupon_code: cart.coupon_code,
       total: cart.total,
-      discount: cart.total_before_discount - cart.total,
+      discount: (cart.total_before_discount - cart.total).toFixed(2),
       uid: cart.uid,
-      coupon_code: cart.coupon_code,
+      coupon_id: cart.coupon_id,
     })
     await Payment.create({
       transaction_id: transactionId,

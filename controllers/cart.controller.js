@@ -3,6 +3,7 @@ const addToCart = require("../services/cart/addToCart.service")
 const clearCart = require("../services/cart/clearCart.service")
 const getUserCart = require("../services/cart/getUserCart.service")
 const updateCart = require("../services/cart/updateCart.service")
+const calculateCartTotal = require("../utils/calculateCartTotal.util")
 
 module.exports = {
   addToCart: async (req, res) => {
@@ -86,11 +87,15 @@ module.exports = {
         message: "product is not in cart",
       })
 
+    const total = await calculateCartTotal(
+      cart,
+      cart.total_before_discount - cartItem.price
+    )
     CartItem.destroy({ where: { cart_id: cart.id, product_id: req.params.id } })
       .then(async (response) => {
         await Cart.update(
           {
-            total: cart.total - cartItem.price,
+            total,
             total_before_discount: cart.total_before_discount - cartItem.price,
           },
           { where: { uid: req.userID } }

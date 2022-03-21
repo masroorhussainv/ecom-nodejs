@@ -1,5 +1,6 @@
 const { Cart, CartItem, User } = require("../../models")
 const { Op } = require("sequelize")
+const calculateCartTotal = require("../../utils/calculateCartTotal.util")
 
 const mergeCartItems = (arrOne, arrTwo, cart) => {
   const mergedArr = arrOne
@@ -26,10 +27,10 @@ const mergeCartItems = (arrOne, arrTwo, cart) => {
 module.exports = async (userID, guestUserId) => {
   const guestCart = await Cart.findOne({ where: { uid: guestUserId } })
 
-  if (guestCart && guestCart.total != 0) {
+  if (guestCart && guestCart.total_before_discount != 0) {
     const cart = await Cart.findOne({ where: { uid: userID } })
 
-    if (cart && cart.total != 0) {
+    if (cart && cart.total_before_discount != 0) {
       var cartItems = await CartItem.findAll({
         where: {
           cart_id: cart.id,
@@ -54,9 +55,13 @@ module.exports = async (userID, guestUserId) => {
         { price: 0 }
       ).price
 
+      const total = await calculateCartTotal(
+        cart,
+        cart.total_before_discount + itemsTotalPrice
+      )
       await Cart.update(
         {
-          total: cart.total + itemsTotalPrice,
+          total,
           total_before_discount: cart.total_before_discount + itemsTotalPrice,
         },
         { where: { uid: userID } }

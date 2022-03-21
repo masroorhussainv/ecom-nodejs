@@ -12,7 +12,7 @@ module.exports = async (card, amount) => {
     if (!token.id) throw " "
 
     const charge = await stripe.charges.create({
-      amount: amount * 100,
+      amount: Math.round(amount * 100),
       currency: "usd",
       source: token.id,
       description: "Ecommerce shoppig",

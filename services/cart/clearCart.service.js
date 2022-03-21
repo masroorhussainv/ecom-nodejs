@@ -9,6 +9,8 @@ module.exports = async (userID) => {
         {
           total: 0,
           total_before_discount: 0,
+          coupon_code: null,
+          coupon_id: null,
         },
         { where: { uid: userID } }
       )

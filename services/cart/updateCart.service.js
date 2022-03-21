@@ -1,4 +1,5 @@
 const { Cart, CartItem } = require("../../models")
+const calculateCartTotal = require("../../utils/calculateCartTotal.util")
 const getUserCart = require("./getUserCart.service")
 
 module.exports = async (quantity, productId, userID, cartItem, cart, type) => {
@@ -23,11 +24,17 @@ module.exports = async (quantity, productId, userID, cartItem, cart, type) => {
     var total = cart.total
     var total_before_discount = cart.total_before_discount
     if (type === "increase") {
-      total = total + price * (quantity - cartItem.quantity)
+      total = await calculateCartTotal(
+        cart,
+        total_before_discount + price * (quantity - cartItem.quantity)
+      )
       total_before_discount =
         total_before_discount + price * (quantity - cartItem.quantity)
     } else {
-      total = total - price * (cartItem.quantity - quantity)
+      total = await calculateCartTotal(
+        cart,
+        total_before_discount - price * (cartItem.quantity - quantity)
+      )
       total_before_discount =
         total_before_discount - price * (cartItem.quantity - quantity)
     }
