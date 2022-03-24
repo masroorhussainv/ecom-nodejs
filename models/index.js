@@ -3,17 +3,16 @@ const Sequelize = require("sequelize")
 
 const sequelize =
   process.env.NODE_ENV === "production"
-    ? new Sequelize(process.env.DATABASE_URL,,
-        {
-          logging: false,
-          ssl: true,
-          dialectOptions: {
-            ssl: {
-              require: true,
-              rejectUnauthorized: false,
-            },
+    ? new Sequelize(process.env.DATABASE_URL, {
+        logging: false,
+        ssl: true,
+        dialectOptions: {
+          ssl: {
+            require: true,
+            rejectUnauthorized: false,
           },
-        })
+        },
+      })
     : new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
         host: dbConfig.HOST,
         dialect: dbConfig.dialect,
