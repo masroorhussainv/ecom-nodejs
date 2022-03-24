@@ -1,4 +1,4 @@
-const { Product } = require("../../models")
+const { Product, Image } = require("../../models")
 const { Op } = require("sequelize")
 
 module.exports = async (query) => {
@@ -10,6 +10,12 @@ module.exports = async (query) => {
           { description: { [Op.iLike]: "%" + query + "%" } },
         ],
       },
+      include: [
+        {
+          model: Image,
+          attributes: ["id", "url"],
+        },
+      ],
       attributes: ["id", "name", "description"],
     })
     return { products }
