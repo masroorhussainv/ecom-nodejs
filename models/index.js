@@ -1,10 +1,19 @@
 const dbConfig = require("../config/db.config.js")
 const Sequelize = require("sequelize")
-console.log(process.env.NODE_ENV)
 
 const sequelize =
   process.env.NODE_ENV === "production"
-    ? new Sequelize(process.env.DATABASE_URL)
+    ? new Sequelize(process.env.DATABASE_URL,,
+        {
+          logging: false,
+          ssl: true,
+          dialectOptions: {
+            ssl: {
+              require: true,
+              rejectUnauthorized: false,
+            },
+          },
+        })
     : new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
         host: dbConfig.HOST,
         dialect: dbConfig.dialect,
