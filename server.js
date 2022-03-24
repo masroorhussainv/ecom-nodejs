@@ -1,6 +1,6 @@
 const express = require("express")
 const app = express()
-const port = 3000
+const port = 4000
 const cors = require("cors")
 const user = require("./routes/user.routes")
 const product = require("./routes/product.routes")
@@ -34,4 +34,6 @@ app.use("/cart", cart)
 app.use("/order", order)
 app.use("/coupon", coupon)
 
-app.listen("4000", () => console.log(`listening on port ${port} `))
+app.listen(process.env.PORT || port, () =>
+  console.log(`listening on port ${port} `)
+)
