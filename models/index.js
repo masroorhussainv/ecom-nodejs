@@ -1,17 +1,21 @@
 const dbConfig = require("../config/db.config.js")
 const Sequelize = require("sequelize")
-const sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
-  host: dbConfig.HOST,
-  dialect: dbConfig.dialect,
-  operatorsAliases: "0",
-  use_env_variable: "DATABASE_URL",
-  pool: {
-    max: dbConfig.pool.max,
-    min: dbConfig.pool.min,
-    acquire: dbConfig.pool.acquire,
-    idle: dbConfig.pool.idle,
-  },
-})
+console.log(process.env.NODE_ENV)
+
+const sequelize =
+  process.env.NODE_ENV === "production"
+    ? new Sequelize(process.env.DATABASE_URL)
+    : new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
+        host: dbConfig.HOST,
+        dialect: dbConfig.dialect,
+        operatorsAliases: "0",
+        pool: {
+          max: dbConfig.pool.max,
+          min: dbConfig.pool.min,
+          acquire: dbConfig.pool.acquire,
+          idle: dbConfig.pool.idle,
+        },
+      })
 
 sequelize
   .authenticate()
