@@ -1,4 +1,4 @@
-const { Product, Image, Comment } = require("../../models")
+const { Product, Image, Comment, User } = require("../../models")
 
 module.exports = (condition) =>
   Product.findOne({
@@ -8,7 +8,17 @@ module.exports = (condition) =>
         model: Image,
         attributes: ["id", "url"],
       },
-      { model: Comment },
+      {
+        model: Comment,
+        include: {
+          model: User,
+          attributes: ["id", "username", "email", "profile_picture", "isAdmin"],
+        },
+      },
+    ],
+    order: [
+      [Comment, "id", "DESC"],
+      [Image, "id", "DESC"],
     ],
   })
     .then((product) => {
@@ -19,6 +29,5 @@ module.exports = (condition) =>
       }
     })
     .catch((err) => {
-      console.log(err)
       return { err }
     })

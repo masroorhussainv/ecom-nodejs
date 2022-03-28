@@ -14,4 +14,5 @@ module.exports = (sequelize, DataTypes) =>
     profile_picture: DataTypes.STRING,
     reset_token: DataTypes.STRING,
     guest_token: DataTypes.STRING,
+    isAdmin: { type: DataTypes.BOOLEAN, defaultValue: false },
   })

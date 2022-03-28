@@ -17,6 +17,8 @@ const options = {
 module.exports = {
   create: async (req, res) => {
     const { name, description, price } = req.body
+    if (!req.isAdmin)
+      return res.status(401).send({ error: "Unauthorized access" })
     // Validate product input
     const { error } = productSchema.validate(req.body, options)
     if (error) return res.status(400).send({ error: error.details[0].message })
@@ -61,6 +63,9 @@ module.exports = {
 
   update: async (req, res) => {
     const { name, description, price, productId } = req.body
+
+    if (!req.isAdmin)
+      return res.status(401).send({ error: "Unauthorized access" })
     // Validate product input
     if (!(name && productId))
       return res
@@ -85,6 +90,8 @@ module.exports = {
   },
 
   delete: async (req, res) => {
+    if (!req.isAdmin)
+      return res.status(401).send({ error: "Unauthorized access" })
     const result = await deleteProduct(req.userID, req.params.id)
     if (result?.err) {
       return res.status(404).send({ error: "not found", message: result.err })

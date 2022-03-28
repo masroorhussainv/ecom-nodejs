@@ -22,8 +22,12 @@ module.exports = {
   },
 
   applyCoupon: async (req, res) => {
+    if (!req.query.code) {
+      return res.status(400).send({ error: `coupon is missing` })
+    }
+
     const coupon = await CouponCode.findOne({
-      where: { code: req.body.coupon },
+      where: { code: req.query.code },
     })
     if (!coupon) return res.status(404).send({ error: "wrong coupon code" })
 

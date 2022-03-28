@@ -9,7 +9,7 @@ module.exports = Joi.object({
       tlds: { allow: ["com", "net"] },
     })
     .required(),
-  profilePicture: Joi.string(),
+  profile_picture: Joi.string(),
   reset_token: Joi.string(),
   guestToken: Joi.string(),
 })

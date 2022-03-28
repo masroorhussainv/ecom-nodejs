@@ -28,7 +28,13 @@ module.exports = {
     if (result?.err) {
       return res
         .status(422)
-        .send({ error: "failed to create comment", message: result.err })
+        .send({
+          error:
+            typeof result.err === "string"
+              ? result.err
+              : "failed to create comment",
+          message: result.err,
+        })
     }
     return res.status(201).send(result.comment)
   },

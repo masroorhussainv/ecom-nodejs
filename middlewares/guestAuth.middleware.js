@@ -30,9 +30,8 @@ module.exports = async (req, res, next) => {
 
     next()
   } catch (e) {
-    console.log(e)
     res.status(401).send({
-      error: "Unauthorized access",
+      error: "No cart found",
     })
   }
 }

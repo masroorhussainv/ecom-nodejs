@@ -7,7 +7,10 @@ module.exports = (condition) =>
       model: Image,
       attributes: ["id", "url"],
     },
-    order: [["id", "DESC"]],
+    order: [
+      ["id", "DESC"],
+      [Image, "id", "DESC"],
+    ],
   })
     .then((products) => {
       return { products }

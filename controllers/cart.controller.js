@@ -16,8 +16,7 @@ module.exports = {
     }
     if (product.uid == req.userID) {
       return res.status(422).send({
-        error: "unable to add to cart",
-        message: "cannot add your own products to cart",
+        error: "cannot add your own products to cart",
       })
     }
 
@@ -35,11 +34,13 @@ module.exports = {
 
   updateCart: async (req, res) => {
     const { productId, quantity } = req.body
-    if (!(productId && quantity)) {
-      return res
-        .status(400)
-        .send({ error: `${productId ? "quantity" : "product id"} is missing` })
+    if (!productId) {
+      return res.status(400).send({ error: `product id is missing` })
     }
+    if (quantity === undefined || quantity === null) {
+      return res.status(400).send({ error: `quantity is missing` })
+    }
+
     const cart = await Cart.findOne({
       where: { uid: req.userID },
     })
@@ -49,14 +50,12 @@ module.exports = {
 
     if (!cartItem) {
       return res.status(400).send({
-        error: "unable to update cart",
-        message: "this product is not exists in your cart",
+        error: "this product is not exists in your cart",
       })
     }
     if (cartItem.quantity == quantity) {
       return res.status(400).send({
-        error: "unable to update cart",
-        message: "already updated!",
+        error: "already updated!",
       })
     }
 
@@ -83,8 +82,7 @@ module.exports = {
     })
     if (!cartItem)
       return res.status(422).send({
-        error: "unable to remove product from cart",
-        message: "product is not in cart",
+        error: "product is not in cart",
       })
 
     const total = await calculateCartTotal(

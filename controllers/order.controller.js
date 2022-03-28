@@ -1,7 +1,7 @@
 const cardSchema = require("../validators/card.validate")
 const createOrder = require("../services/order/createOrder.service")
 const deductPayment = require("../services/order/deductPayment.service")
-const { Cart, CartItem, Product, Payment, Order } = require("../models")
+const { Cart, CartItem, Product, Payment, Order, Image } = require("../models")
 const getUserOrder = require("../services/order/getUserOrder.service")
 
 const options = {
@@ -57,19 +57,27 @@ module.exports = {
     return res.status(200).send(result.order)
   },
 
-  findAll: async (req, res) =>
+  findAll: async (req, res) => {
+    const condition = !req.isAdmin && { where: { uid: req.userID } }
     Order.findAll({
-      where: { uid: req.userID },
+      ...condition,
       include: [
         {
           model: Product,
           through: { attributes: ["id", "quantity", "price"] },
+          include: {
+            model: Image,
+            attributes: ["id", "url"],
+          },
         },
         {
           model: Payment,
         },
       ],
-      order: [["id", "DESC"]],
+      order: [
+        ["id", "DESC"],
+        [Product, Image, "id", "DESC"],
+      ],
     })
       .then((response) => res.status(200).send(response))
       .catch((err) =>
@@ -77,10 +85,16 @@ module.exports = {
           error: "something went wrong",
           message: err,
         })
-      ),
+      )
+  },
 
   updateStatus: async (req, res) => {
     const { id, status } = req.body
+    if (!req.isAdmin)
+      return res.status(401).send({
+        error: "Unauthorized access",
+      })
+
     if (!(id && status))
       return res
         .status(400)
@@ -94,8 +108,7 @@ module.exports = {
     )
       .then(async (response) => {
         if (response[0] < 1) throw " "
-        const result = await getUserOrder(id)
-        res.status(200).send(result.order)
+        res.status(200).send({ success: "Updated successfully" })
       })
       .catch((err) =>
         res.status(500).send({

@@ -30,7 +30,10 @@ const options = {
 
 module.exports = {
   signUp: async (req, res) => {
-    let { username, email, password, profilePicture, guestToken } = req.body
+    let { username, email, password, guestToken } = req.body
+    const profilePicture = req.fileNames
+      ? "/static/images/" + req.fileNames[0]
+      : null
 
     // Validate user input
     const { error } = userSchema.validate(req.body, options)
@@ -84,6 +87,7 @@ module.exports = {
           email: user.email,
           username: user.username,
           guestUser: false,
+          isAdmin: user.isAdmin,
         },
         process.env.JWT_SECRET_KEY,
         { expiresIn: "7d" }
@@ -130,6 +134,7 @@ module.exports = {
         email: user.email,
         username: user.username,
         guestUser: false,
+        isAdmin: user.isAdmin,
       },
       process.env.JWT_SECRET_KEY,
       { expiresIn: "7d" }

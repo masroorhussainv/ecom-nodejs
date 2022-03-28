@@ -3,6 +3,8 @@ const fs = require("fs")
 
 module.exports = {
   delete: async (req, res) => {
+    if (!req.isAdmin)
+      return res.status(401).send({ error: "Unauthorized access" })
     try {
       var image = await Image.findOne({
         where: { id: req.params.id },

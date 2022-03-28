@@ -6,6 +6,7 @@ module.exports = (req, res, next) => {
     const decodedToken = jwt.verify(token, process.env.JWT_SECRET_KEY)
     if (decodedToken.guestUser) throw " "
     req.userID = decodedToken.userID
+    req.isAdmin = decodedToken.isAdmin
 
     next()
   } catch {
