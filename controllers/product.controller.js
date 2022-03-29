@@ -5,6 +5,7 @@ const createProduct = require("../services/products/createProduct.service")
 const updateProduct = require("../services/products/updateProduct.service")
 const deleteProduct = require("../services/products/deleteProduct.service")
 const searchProducts = require("../services/products/searchProducts.service")
+const cloudinary = require("../utils/cloudinary.util")
 
 const options = {
   errors: {
@@ -22,6 +23,13 @@ module.exports = {
     // Validate product input
     const { error } = productSchema.validate(req.body, options)
     if (error) return res.status(400).send({ error: error.details[0].message })
+
+    // upload media to cloudinary
+    req.fileNames =
+      req.fileNames &&
+      (await Promise.all(
+        req.fileNames.map(async (url) => await cloudinary.uploads(url))
+      ))
 
     // Create product with images
     const result = await createProduct(
@@ -71,6 +79,13 @@ module.exports = {
       return res
         .status(400)
         .send({ error: `${name ? "product id" : "name"} is required` })
+
+    // upload media to cloudinary
+    req.fileNames =
+      req.fileNames &&
+      (await Promise.all(
+        req.fileNames.map(async (url) => await cloudinary.uploads(url))
+      ))
 
     // update product
     const result = await updateProduct(

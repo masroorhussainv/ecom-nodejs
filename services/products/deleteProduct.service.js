@@ -1,5 +1,5 @@
 const { Product, Image } = require("../../models")
-const fs = require("fs")
+const cloudinary = require("../../utils/cloudinary.util")
 
 module.exports = async (userID, productId) => {
   try {
@@ -11,8 +11,8 @@ module.exports = async (userID, productId) => {
       where: { uid: userID, id: productId },
     })
     if (product < 1) return { err: "wrong product id" }
-    images.map((image) =>
-      fs.unlinkSync("./public/images/" + image.url.split("images/")[1])
+    images.map(
+      async (image) => await cloudinary.destroy(image.url.split(/[/.]/)[2])
     )
 
     return

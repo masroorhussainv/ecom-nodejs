@@ -6,6 +6,7 @@ const crypto = require("crypto")
 const sendEmail = require("../utils/sendEmail.util")
 const userSchema = require("../validators/user.validate")
 const deleteGuestUserCart = require("../services/cart/deleteGuestUserCart.service")
+const cloudinary = require("../utils/cloudinary.util")
 
 const resetPasswordEmailTemplate = (name, link) => `<html>
     <head>
@@ -31,8 +32,10 @@ const options = {
 module.exports = {
   signUp: async (req, res) => {
     let { username, email, password, guestToken } = req.body
+
+    // upload media to cloudinary
     const profilePicture = req.fileNames
-      ? "/static/images/" + req.fileNames[0]
+      ? await cloudinary.uploads(req.fileNames[0])
       : null
 
     // Validate user input

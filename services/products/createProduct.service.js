@@ -15,7 +15,7 @@ module.exports = async (userID, name, description, price, images) => {
     // create images
     if (images) {
       images = images.map((image) => {
-        return { url: "/static/images/" + image }
+        return { url: image }
       })
       await Image.bulkCreate(
         images.map((image) => {
