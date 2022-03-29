@@ -17,6 +17,7 @@ module.exports = async (query) => {
         },
       ],
       attributes: ["id", "name", "description"],
+      order: [[Image, "id", "DESC"]],
     })
     return { products }
   } catch (err) {

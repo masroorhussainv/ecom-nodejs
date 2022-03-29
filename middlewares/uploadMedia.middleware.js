@@ -6,7 +6,9 @@ const storage = multer.diskStorage({
     callback(null, "./public/images")
   },
   filename: function (req, file, callback) {
-    const fileName = `${file.fieldname}_${Date.now()}`
+    const fileName = `${file.fieldname}_${
+      Date.now().toString(36) + Math.random().toString(36).substr(2)
+    }`
     callback(null, fileName)
 
     if (!req.fileNames) req.fileNames = []
