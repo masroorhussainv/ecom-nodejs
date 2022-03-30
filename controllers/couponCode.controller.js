@@ -5,7 +5,9 @@ const { CouponCode, Cart } = require("../models")
 
 module.exports = {
   createCoupon: async (req, res) => {
-    const readCsvQueue = new Queue("read-csv")
+    const REDIS_URL = process.env.REDIS_URL || "redis://127.0.0.1:6379"
+
+    const readCsvQueue = new Queue("read-csv", REDIS_URL)
     await readCsvQueue.add({
       path: req.file.path,
       filename: req.file.filename,
